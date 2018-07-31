@@ -1,0 +1,10 @@
+<Proxy balancer://mycluster>
+BalancerMember <%= @proxy1host %> retry=30
+BalancerMember <%= @proxy2host %> status=+H retry=0
+</Proxy>
+ProxyPass / balancer://mycluster 
+
+#<%= @proxy1host %> serves all requests and <%= @proxy2host %> waits till node1
+#fails and takes over. Once <%= @proxy1host %> is up, all requests will
+#be served by <%= @proxy1host %> again. Apache checks every 30 secs (retry=30)
+#if node1 is up or still down and switches back to node1.
